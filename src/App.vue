@@ -102,7 +102,7 @@ async function startAnalysis () {
 
 async function loadProgress () {
   if (!xmbh.value.trim()) return;
-  const response = await fetch(apiUrl(`/analysis/progress11?xmbh=${encodeURIComponent(xmbh.value.trim())}`), {
+  const response = await fetch(apiUrl(`/analysis/progress1122?xmbh=${encodeURIComponent(xmbh.value.trim())}`), {
     headers: authHeaders()
   });
   const body = await readJson(response);
