@@ -1,0 +1,37 @@
+:root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #f3f6fb; font-synthesis: none; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input { font: inherit; }
+button { border: 0; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .5; }
+.page-shell { width: min(1080px, calc(100% - 32px)); margin: 32px auto 64px; display: grid; gap: 18px; }
+.token-mask { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(15, 29, 52, .62); backdrop-filter: blur(5px); }
+.token-dialog { width: min(440px, 100%); padding: 28px; border-radius: 18px; background: #fff; box-shadow: 0 24px 70px rgba(13, 29, 54, .28); }
+.token-dialog h2 { margin-bottom: 10px; font-size: 24px; }.dark-eyebrow { color: #377ed0; }.token-dialog input { width: 100%; margin-top: 12px; }.token-button { width: 100%; margin-top: 12px; }.token-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+.card { background: #fff; border: 1px solid #e5eaf2; border-radius: 18px; box-shadow: 0 12px 32px rgba(34, 54, 88, .06); padding: 24px; }
+.hero-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: linear-gradient(135deg, #132b52, #2463a8); color: #fff; border: 0; }
+.eyebrow { margin: 0 0 8px; color: #b8d9ff; letter-spacing: .16em; text-transform: uppercase; font-size: 12px; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { margin-bottom: 8px; font-size: clamp(26px, 4vw, 38px); }
+h2 { margin-bottom: 0; font-size: 20px; }
+h3 { margin-bottom: 12px; font-size: 14px; color: #52617a; }
+.subline { margin-bottom: 0; color: #dbeaff; }
+.connection, .status { border-radius: 999px; padding: 7px 12px; font-size: 12px; white-space: nowrap; }
+.connection.connected { background: #c8f7df; color: #12633c; }
+.connection.reconnecting { background: #fff0c2; color: #8a5b00; }
+.connection.disconnected { background: #e9edf4; color: #52617a; }
+.controls-card label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: #52617a; }
+.control-row { display: flex; gap: 10px; }
+input { flex: 1; min-width: 0; border: 1px solid #ccd6e5; border-radius: 10px; padding: 11px 13px; outline: none; }
+input:focus { border-color: #377ed0; box-shadow: 0 0 0 3px rgba(55, 126, 208, .14); }
+button { border-radius: 10px; padding: 11px 16px; font-weight: 700; }
+.primary { background: #2463a8; color: #fff; }.danger { background: #d9534f; color: #fff; }.secondary { background: #edf3fb; color: #245d98; }
+.hint, .empty, .last-progress { color: #78869b; font-size: 13px; }.hint { margin: 12px 0 0; }.error { margin: 12px 0 0; color: #c33732; }
+code { background: #eef2f8; padding: 2px 5px; border-radius: 5px; }
+.section-title, .progress-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; }.section-title { margin-bottom: 22px; }
+.status[data-status="running"] { background: #e5f0ff; color: #2163a2; }.status[data-status="calculating"] { background: #fff0c2; color: #8a5b00; }.status[data-status="done"] { background: #c8f7df; color: #12633c; }.status[data-status="cancelled"], .status[data-status="fail"] { background: #ffe0df; color: #a6322e; }
+.progress-number { font-size: 58px; font-weight: 800; letter-spacing: -.06em; color: #1b4f87; }.progress-number small { margin-left: 3px; font-size: 22px; }
+.progress-track { height: 14px; overflow: hidden; background: #e8eef6; border-radius: 999px; }.progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2c78cb, #45b9a4); transition: width .35s ease; }
+.progress-meta { margin-top: 10px; color: #5c6a80; font-size: 13px; }.layer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }.layer-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 14px; }.done-list li { color: #16804c; }.pending-list li { color: #8a6b22; }.large-empty { padding: 30px 0; text-align: center; }
+.table-wrap { overflow-x: auto; }.results-card table { width: 100%; border-collapse: collapse; font-size: 14px; }.results-card th, .results-card td { padding: 12px 10px; border-bottom: 1px solid #edf0f5; text-align: left; }.results-card th { color: #66758b; font-size: 12px; }
+@media (max-width: 680px) { .hero-card, .control-row, .progress-meta { align-items: stretch; flex-direction: column; }.layer-grid { grid-template-columns: 1fr; }.control-row button { width: 100%; } }
