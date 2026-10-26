@@ -38,7 +38,7 @@ const connectionText = computed(() => ({
   disconnected: 'SSE 未连接'
 }[connectionState.value]));
 
-function authHeaders() {
+function authHeaders () {
   const rawToken = token.value.trim();
   const authorization = /^Bearer\s+/i.test(rawToken) ? rawToken : `Bearer ${rawToken}`;
   return {
@@ -46,7 +46,7 @@ function authHeaders() {
   };
 }
 
-function saveToken() {
+function saveToken () {
   const value = tokenInput.value.trim();
   if (!value) {
     errorMessage.value = '请输入 Authorization token';
@@ -57,14 +57,14 @@ function saveToken() {
   errorMessage.value = '';
 }
 
-function clearToken() {
+function clearToken () {
   stopStream();
   token.value = '';
   tokenInput.value = '';
   sessionStorage.removeItem('yfgl-demo-token');
 }
 
-async function readJson(response) {
+async function readJson (response) {
   const body = await response.json();
   if (!response.ok || body.code >= 500) {
     throw new Error(body.message || `请求失败：${response.status}`);
@@ -72,7 +72,7 @@ async function readJson(response) {
   return body;
 }
 
-async function startAnalysis() {
+async function startAnalysis () {
   if (!xmbh.value.trim()) {
     errorMessage.value = '请输入项目编号';
     return;
@@ -100,16 +100,16 @@ async function startAnalysis() {
   }
 }
 
-async function loadProgress() {
+async function loadProgress () {
   if (!xmbh.value.trim()) return;
-  const response = await fetch(apiUrl(`/analysis/progress?xmbh=${encodeURIComponent(xmbh.value.trim())}`), {
+  const response = await fetch(apiUrl(`/analysis/progress11?xmbh=${encodeURIComponent(xmbh.value.trim())}`), {
     headers: authHeaders()
   });
   const body = await readJson(response);
   progress.value = body.data || null;
 }
 
-async function connectStream() {
+async function connectStream () {
   if (!xmbh.value.trim()) return;
   if (streamController.value) {
     streamController.value.abort();
@@ -130,7 +130,7 @@ async function connectStream() {
       openWhenHidden: true,
       retryDelay: 2000,
 
-      async onopen(response) {
+      async onopen (response) {
         const contentType = response.headers.get('content-type') || '';
         if (!response.ok || !contentType.includes(EventStreamContentType)) {
           throw new Error(`SSE 连接失败：${response.status}`);
@@ -139,7 +139,7 @@ async function connectStream() {
         await loadProgress();
       },
 
-      onmessage(event) {
+      onmessage (event) {
         if (!event.data) return;
         try {
           progress.value = JSON.parse(event.data);
@@ -152,14 +152,14 @@ async function connectStream() {
         }
       },
 
-      onclose() {
+      onclose () {
         if (!['done', 'fail', 'cancelled'].includes(progress.value?.status)) {
           connectionState.value = 'reconnecting';
           throw new Error('SSE 连接被提前关闭');
         }
       },
 
-      onerror(error) {
+      onerror (error) {
         connectionState.value = 'reconnecting';
         if (controller.signal.aborted) return;
         console.warn('SSE 暂时断开，将自动重连', error);
@@ -174,7 +174,7 @@ async function connectStream() {
   }
 }
 
-async function cancelAnalysis() {
+async function cancelAnalysis () {
   if (!xmbh.value.trim() || !isRunning.value) return;
   busy.value = true;
   errorMessage.value = '';
@@ -193,7 +193,7 @@ async function cancelAnalysis() {
   }
 }
 
-async function loadResults() {
+async function loadResults () {
   if (!xmbh.value.trim()) return;
   loadingResults.value = true;
   try {
@@ -209,7 +209,7 @@ async function loadResults() {
   }
 }
 
-function stopStream() {
+function stopStream () {
   streamController.value?.abort();
   streamController.value = null;
   connectionState.value = 'disconnected';
@@ -237,9 +237,19 @@ onBeforeUnmount(stopStream);
       <section class="token-dialog">
         <p class="eyebrow dark-eyebrow">Authorization</p>
         <h2>输入访问 Token</h2>
-        <p class="hint">Demo 不调用登录接口，输入 token 即可，程序会自动添加 <code>Bearer </code> 前缀。</p>
-        <input v-model="tokenInput" type="password" placeholder="请输入 token，也可输入 Bearer token" @keyup.enter="saveToken" />
-        <button class="primary token-button" @click="saveToken">进入 Demo</button>
+        <p class="hint">
+          Demo 不调用登录接口，输入 token 即可，程序会自动添加
+          <code>Bearer </code> 前缀。
+        </p>
+        <input
+          v-model="tokenInput"
+          type="password"
+          placeholder="请输入 token，也可输入 Bearer token"
+          @keyup.enter="saveToken"
+        />
+        <button class="primary token-button" @click="saveToken">
+          进入 Demo
+        </button>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       </section>
     </div>
@@ -250,15 +260,34 @@ onBeforeUnmount(stopStream);
         <h1>压覆分析进度 Demo</h1>
         <p class="subline">启动后台分析，实时查看内网分批回传的图层结果。</p>
       </div>
-      <span class="connection" :class="connectionState">{{ connectionText }}</span>
+      <span class="connection" :class="connectionState">{{
+        connectionText
+      }}</span>
     </section>
 
     <section class="card controls-card">
       <label for="xmbh">项目编号</label>
       <div class="control-row">
-        <input id="xmbh" v-model="xmbh" placeholder="请输入 xmbh，例如 A001" :disabled="isRunning" />
-        <button class="primary" :disabled="busy || isRunning" @click="startAnalysis">开始分析</button>
-        <button class="danger" :disabled="busy || !isRunning" @click="cancelAnalysis">取消分析</button>
+        <input
+          id="xmbh"
+          v-model="xmbh"
+          placeholder="请输入 xmbh，例如 A001"
+          :disabled="isRunning"
+        />
+        <button
+          class="primary"
+          :disabled="busy || isRunning"
+          @click="startAnalysis"
+        >
+          开始分析
+        </button>
+        <button
+          class="danger"
+          :disabled="busy || !isRunning"
+          @click="cancelAnalysis"
+        >
+          取消分析
+        </button>
       </div>
       <p class="hint">Authorization token 由页面启动时输入，不调用登录接口。</p>
       <div class="token-actions">
@@ -271,31 +300,55 @@ onBeforeUnmount(stopStream);
     <section class="card progress-card">
       <div class="section-title">
         <h2>分析进度</h2>
-        <span v-if="progress" class="status" :data-status="progress.status">{{ statusText }}</span>
+        <span v-if="progress" class="status" :data-status="progress.status">{{
+          statusText
+        }}</span>
       </div>
 
       <template v-if="progress">
-        <div class="progress-number">{{ progress.percent }}<small>%</small></div>
-        <div class="progress-track"><div class="progress-fill" :style="{ width: `${progress.percent}%` }"></div></div>
-        <div class="progress-meta"><span>{{ progress.done }} / {{ progress.total }} 个图层</span><span>{{ progress.message }}</span></div>
+        <div class="progress-number">
+          {{ progress.percent }}<small>%</small>
+        </div>
+        <div class="progress-track">
+          <div
+            class="progress-fill"
+            :style="{ width: `${progress.percent}%` }"
+          ></div>
+        </div>
+        <div class="progress-meta">
+          <span>{{ progress.done }} / {{ progress.total }} 个图层</span
+          ><span>{{ progress.message }}</span>
+        </div>
 
         <div class="layer-grid">
           <div>
             <h3>已完成图层</h3>
-            <ul v-if="progress.completedLayers?.length" class="layer-list done-list">
-              <li v-for="layer in progress.completedLayers" :key="layer">✓ {{ layer }}</li>
+            <ul
+              v-if="progress.completedLayers?.length"
+              class="layer-list done-list"
+            >
+              <li v-for="layer in progress.completedLayers" :key="layer">
+                ✓ {{ layer }}
+              </li>
             </ul>
             <p v-else class="empty">暂无</p>
           </div>
           <div>
             <h3>待回传图层</h3>
-            <ul v-if="progress.pendingLayers?.length" class="layer-list pending-list">
-              <li v-for="layer in progress.pendingLayers" :key="layer">… {{ layer }}</li>
+            <ul
+              v-if="progress.pendingLayers?.length"
+              class="layer-list pending-list"
+            >
+              <li v-for="layer in progress.pendingLayers" :key="layer">
+                … {{ layer }}
+              </li>
             </ul>
             <p v-else class="empty">暂无</p>
           </div>
         </div>
-        <p class="last-progress">最近完成：{{ progress.lastCompletedLayer || '暂无' }}</p>
+        <p class="last-progress">
+          最近完成：{{ progress.lastCompletedLayer || "暂无" }}
+        </p>
       </template>
       <p v-else class="empty large-empty">还没有启动分析。</p>
     </section>
@@ -303,13 +356,34 @@ onBeforeUnmount(stopStream);
     <section class="card results-card">
       <div class="section-title">
         <h2>已同步结果</h2>
-        <button class="secondary" :disabled="loadingResults || !xmbh" @click="loadResults">刷新结果</button>
+        <button
+          class="secondary"
+          :disabled="loadingResults || !xmbh"
+          @click="loadResults"
+        >
+          刷新结果
+        </button>
       </div>
       <p class="hint">取消分析后，这里仍会保留已经回传并同步成功的图层结果。</p>
       <div v-if="results.length" class="table-wrap">
         <table>
-          <thead><tr><th>图层</th><th>压覆面积（原始值）</th><th>是否有效</th></tr></thead>
-          <tbody><tr v-for="item in results" :key="`${item.projid}-${item.layername}`"><td>{{ item.layername }}</td><td>{{ item.invalidarea }}</td><td>{{ item.isvalid }}</td></tr></tbody>
+          <thead>
+            <tr>
+              <th>图层</th>
+              <th>压覆面积（原始值）</th>
+              <th>是否有效</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="item in results"
+              :key="`${item.projid}-${item.layername}`"
+            >
+              <td>{{ item.layername }}</td>
+              <td>{{ item.invalidarea }}</td>
+              <td>{{ item.isvalid }}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <p v-else class="empty">暂无已同步结果。</p>
